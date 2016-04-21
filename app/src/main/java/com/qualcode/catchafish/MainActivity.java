@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private static GoogleApiClient mGoogleApiClient;
     private MyListDialog mMyListDialog;
+    private AlertDialog mConnectionRequestDialog;
     private static final long TIMEOUT_ADVERTISE = 1000L * 30L;
     private static final long TIMEOUT_DISCOVER = 1000L * 30L;
     private String mOtherEndpointId;
@@ -88,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onResult(Connections.StartAdvertisingResult result) {
                 if (result.getStatus().isSuccess()) {
+                    ((TextView)findViewById(R.id.txt_status)).setText("Advertising...");
                 } else {
 
                     // If the user hits 'Advertise' multiple times in the timeout window,
@@ -111,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onResult(Status status) {
                 if (status.isSuccess()) {
-                    findViewById(R.id.txt_discovering).setVisibility(View.VISIBLE);
+                    ((TextView)findViewById(R.id.txt_status)).setText("Searching...");
                 } else {
 
                     // If the user hits 'Discover' multiple times in the timeout window,
@@ -163,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void connectTo(String endpointId, final String endpointName) {
-        String myName = null;
+        final String myName = null;
         byte[] myPayload = null;
 
         Nearby.Connections.sendConnectionRequest(mGoogleApiClient, myName, endpointId, myPayload,
@@ -171,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onConnectionResponse(String endpointId, Status status, byte[] bytes) {
                         if (status.isSuccess()) {
-                            Toast.makeText(MainActivity.this, "Connected to " + endpointName, Toast.LENGTH_SHORT).show();
+                            ((TextView)findViewById(R.id.txt_status)).setText("Connected to: " + endpointName);
 
                         } else {
                             //debugLog("onConnectionResponse: " + endpointName + " FAILURE");
@@ -186,14 +189,46 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onConnectionRequest(final String endpointId, String deviceId, String endpointName, byte[] payload) {
+    public void onConnectionRequest(final String endpointId, String deviceId, final String endpointName, byte[] payload) {
 
+        // This device is advertising and has received a connection request. Show a dialog asking
+        // the user if they would like to connect and accept or reject the request accordingly.
+        mConnectionRequestDialog = new AlertDialog.Builder(this)
+                .setTitle("Connection Request")
+                .setMessage("Do you want to connect to " + endpointName + "?")
+                .setCancelable(false)
+                .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        byte[] payload = null;
+                        Nearby.Connections.acceptConnectionRequest(mGoogleApiClient, endpointId,
+                                payload, MainActivity.this)
+                                .setResultCallback(new ResultCallback<Status>() {
+                                    @Override
+                                    public void onResult(Status status) {
+                                        if (status.isSuccess()) {
+                                            mOtherEndpointId = endpointId;
+                                            ((TextView)findViewById(R.id.txt_status)).setText("Connected to: " + endpointName);
+                                        } else {
+                                            //debugLog("acceptConnectionRequest: FAILURE");
+                                        }
+                                    }
+                                });
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Nearby.Connections.rejectConnectionRequest(mGoogleApiClient, endpointId);
+                    }
+                }).create();
+
+        mConnectionRequestDialog.show();
     }
 
     @Override
     public void onConnected(Bundle bundle) {
-
-    }
+            }
 
     @Override
     public void onDisconnected(String endpointId) {
