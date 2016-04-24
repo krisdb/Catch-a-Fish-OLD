@@ -9,8 +9,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -51,11 +53,6 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        findViewById(R.id.btn_available).setOnClickListener(this);
-        findViewById(R.id.btn_catch).setOnClickListener(this);
-
-        mDeviceInfoMessage = DeviceMessage.newNearbyMessage(InstanceID.getInstance(getApplicationContext()).getId());
-
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Nearby.MESSAGES_API)
                 .addConnectionCallbacks(this)
@@ -77,15 +74,35 @@ public class MainActivity extends AppCompatActivity implements
             public void onLost(final Message message) {
             }
         };
+
+        findViewById(R.id.btn_about_me).setOnClickListener(this);
+        findViewById(R.id.btn_looking_for).setOnClickListener(this);
+
+
+        final ToggleButton toggle = (ToggleButton) findViewById(R.id.btn_available);
+
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    publish();
+                    subscribe();
+                } else {
+                    unpublish();
+                    unsubscribe();
+                }
+            }
+        });
     }
 
     private void publish() {
-        ((Button)findViewById(R.id.btn_available)).setText("Unavailable");
+
         if (!mGoogleApiClient.isConnected()) {
             if (!mGoogleApiClient.isConnecting()) {
                 mGoogleApiClient.connect();
             }
         } else {
+            mDeviceInfoMessage = DeviceMessage.newNearbyMessage(getApplicationContext(), InstanceID.getInstance(getApplicationContext()).getId());
+
             PublishOptions options = new PublishOptions.Builder()
                     .setStrategy(PUB_SUB_STRATEGY)
                     .setCallback(new PublishCallback() {
@@ -109,13 +126,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    /**
-     * Subscribes to messages from nearby devices. If not successful, attempts to resolve any error
-     * related to Nearby permissions by displaying an opt-in dialog. Registers a callback which
-     * updates state when the subscription expires.
-     */
     private void subscribe() {
-        ((Button)findViewById(R.id.btn_catch)).setText("Stop Fishing");
 
         if (!mGoogleApiClient.isConnected()) {
             if (!mGoogleApiClient.isConnecting()) {
@@ -148,6 +159,13 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    private void unpublish() {
+        Nearby.Messages.unpublish(mGoogleApiClient, mDeviceInfoMessage);
+    }
+
+    private void unsubscribe() {
+        Nearby.Messages.unsubscribe(mGoogleApiClient, mMessageListener);
+    }
 
     @Override
     public void onStart() {
@@ -160,8 +178,9 @@ public class MainActivity extends AppCompatActivity implements
     public void onStop() {
         super.onStop();
 
-        Nearby.Messages.unpublish(mGoogleApiClient, mDeviceInfoMessage);
-        ((Button)findViewById(R.id.btn_available)).setText("I'm Available");
+        if (mDeviceInfoMessage != null)
+            Nearby.Messages.unpublish(mGoogleApiClient, mDeviceInfoMessage);
+
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
         }
@@ -213,30 +232,26 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
-            case R.id.btn_available:
-                publish();
+            case R.id.btn_about_me:
+                startActivity(new Intent(MainActivity.this, SettingsAboutMe.class));
                 break;
-            case R.id.btn_catch:
-                subscribe();
+            case R.id.btn_looking_for:
+                startActivity(new Intent(MainActivity.this, SettingsLookingFor.class));
                 break;
         }
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }

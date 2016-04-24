@@ -7,9 +7,9 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <meta-data android:name="com.google.android.gms.nearby.connection.SERVICE_ID"
+        <meta-data
+            android:name="com.google.android.gms.nearby.connection.SERVICE_ID"
             android:value="@string/service_id" />
-
         <meta-data
             android:name="com.google.android.nearby.messages.API_KEY"
             android:value="AIzaSyANV4rYe_vx5_4yV6X_RivXTZNDtvRXYFs" />
@@ -22,6 +22,14 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".SettingsAboutMe"
+            android:label="@string/title_activity_settings_about_me" >
+        </activity>
+        <activity
+            android:name=".SettingsLookingFor"
+            android:label="@string/title_activity_settings_looking_for" >
         </activity>
     </application>
 

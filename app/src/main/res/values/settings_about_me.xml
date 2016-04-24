@@ -1,0 +1,55 @@
+<resources>
+    <string name="title_activity_settings_about_me">About Me</string>
+
+    <string name="pref_title_user_message">Display message</string>
+
+    <string name="pref_title_user_name">Name</string>
+
+    <string name="pref_title_user_age">Age</string>
+
+    <string name="pref_title_race">Race</string>
+
+    <string name="pref_key_user_sex">user_sex</string>
+    <string name="pref_title_user_sex">Sex</string>
+
+    <string name="pref_title_interests">Interests</string>
+
+    <string-array name="pref_list_sex_titles">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+
+    <string-array name="pref_list_sex_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+    <string-array name="pref_list_race_titles">
+        <item>White</item>
+        <item>Asian</item>
+        <item>Hispanic</item>
+        <item>African American</item>
+    </string-array>
+
+    <string-array name="pref_list_race_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="pref_list_interests_titles">
+        <item>Music</item>
+        <item>Food</item>
+        <item>Travel</item>
+        <item>Reading</item>
+    </string-array>
+
+    <string-array name="pref_list_interests_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+</resources>

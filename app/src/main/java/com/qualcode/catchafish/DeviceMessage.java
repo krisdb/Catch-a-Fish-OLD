@@ -1,5 +1,6 @@
 package com.qualcode.catchafish;
 
+import android.content.Context;
 import android.os.Build;
 
 import com.google.android.gms.nearby.messages.Message;
@@ -18,11 +19,13 @@ public class DeviceMessage {
 
     private final String mInstanceId;
     private final String mMessageBody;
+    private static Context mContext;
 
     /**
      * Builds a new {@link Message} object using a unique identifier.
      */
-    public static Message newNearbyMessage(String instanceId) {
+    public static Message newNearbyMessage(Context ctx, String instanceId) {
+        mContext = ctx;
         DeviceMessage deviceMessage = new DeviceMessage(instanceId);
 
         return new Message(gson.toJson(deviceMessage).toString().getBytes(Charset.forName("UTF-8")));
@@ -34,15 +37,15 @@ public class DeviceMessage {
      */
     public static DeviceMessage fromNearbyMessage(Message message) {
         String nearbyMessageString = new String(message.getContent()).trim();
-        return gson.fromJson(
-                (new String(nearbyMessageString.getBytes(Charset.forName("UTF-8")))),
-                DeviceMessage.class);
+        return gson.fromJson((new String(nearbyMessageString.getBytes(Charset.forName("UTF-8")))),DeviceMessage.class);
     }
 
     private DeviceMessage(String instanceId) {
         this.mInstanceId = instanceId;
         this.mMessageBody = "Hello";
 
+        AppPreferences prefs = new AppPreferences(mContext);
+        String sex = prefs.getUserSex();
 
         // TODO(developer): add other fields that must be included in the Nearby Message payload.
     }
