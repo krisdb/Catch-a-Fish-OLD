@@ -9,7 +9,7 @@
         android:id="@+id/btn_available"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textOn="Off The Market"
+        android:textOn="Not Available"
         android:textOff="Available"
         />
 

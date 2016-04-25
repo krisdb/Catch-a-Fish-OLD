@@ -3,6 +3,7 @@
 
     <string name="pref_title_user_message">Display message</string>
 
+    <string name="pref_key_user_name">user_name</string>
     <string name="pref_title_user_name">Name</string>
 
     <string name="pref_title_user_age">Age</string>

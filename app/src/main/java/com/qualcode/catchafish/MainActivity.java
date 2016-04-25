@@ -2,7 +2,9 @@ package com.qualcode.catchafish;
 
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -29,7 +31,10 @@ import com.google.android.gms.nearby.messages.Strategy;
 import com.google.android.gms.nearby.messages.SubscribeCallback;
 import com.google.android.gms.nearby.messages.SubscribeOptions;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -39,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = "MainActivity";
 
-    private static final Strategy PUB_SUB_STRATEGY = new Strategy.Builder() .setTtlSeconds(3 * 60).build();
+    private static final Strategy PUB_SUB_STRATEGY = new Strategy.Builder().setTtlSeconds(3 * 60).build();
     private GoogleApiClient mGoogleApiClient;
 
     private Message mDeviceInfoMessage;
@@ -65,7 +70,10 @@ public class MainActivity extends AppCompatActivity implements
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ((TextView)findViewById(R.id.txt_status)).setText(DeviceMessage.fromNearbyMessage(message).getMessageBody());
+                        if (MatchFound(DeviceMessage.fromNearbyMessage(message).getMessageBody()))
+                        {
+                            ((TextView)findViewById(R.id.txt_status)).setText("Match Found!");
+                        }
                     }
                 });
             }
@@ -93,6 +101,33 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
     }
+
+    private Boolean MatchFound(final String fi)
+    {
+        final AppPreferences prefs = new AppPreferences(getApplicationContext());
+        final HashMap<String, String> fishInfo = convert(fi);
+
+        final Boolean lookingForMale = prefs.getLookingForMale();
+        final Boolean lookingForFemale = prefs.getLookingForFemale();
+
+        final Boolean fishIsMale = fishInfo.get("sex").equals("0");
+        final Boolean fishIsFemale = fishInfo.get("sex").equals("1");
+
+        /*
+        String status = "Looking For Male: " + lookingForMale + "\n\n";
+        status += "Looking For Female: " + lookingForFemale + "\n\n";
+        status += "Fish is Male: " + fishIsMale + "\n\n";
+        status += "Fish is Female: " + fishIsFemale + "\n\n";
+
+        ((TextView)findViewById(R.id.txt_status)).setText(status);
+        */
+
+        if (fishIsMale && lookingForMale || fishIsFemale && lookingForFemale)
+            return true;
+
+        return false;
+    }
+
 
     private void publish() {
 
@@ -223,7 +258,6 @@ public class MainActivity extends AppCompatActivity implements
         Log.i(TAG, "connection to GoogleApiClient failed");
     }
 
-
     @Override
     public void onConnectionSuspended(int cause) {
         Log.i(TAG, "GoogleApiClient connection suspended: " + cause);
@@ -241,7 +275,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -257,5 +290,22 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private HashMap<String, String> convert(String str) {
+        String[] tokens = str.split("&");
+        HashMap<String, String> map = new HashMap<String, String>();
+
+        final int length = tokens.length;
+
+        for (int i = 0;i < length; i++)
+        {
+            String[] strings = tokens[i].split("=");
+
+            if(strings.length == 2)
+                map.put(strings[0], strings[1].replaceAll("%2C", ","));
+        }
+
+        return map;
     }
 }

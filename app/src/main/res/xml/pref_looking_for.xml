@@ -1,12 +1,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
-        android:key="looking_for_sex_male"
-        android:title="@string/pref_looking_for_sex_male" />
+        android:key="@string/pref_key_looking_for_male"
+        android:title="@string/pref_title_looking_for_sex_male" />
 
     <SwitchPreference
-        android:key="looking_for_sex_female"
-        android:title="@string/pref_looking_for_sex_female" />
+        android:key="@string/pref_key_looking_for_female"
+        android:title="@string/pref_title_looking_for_sex_female" />
 
     <EditTextPreference
         android:key="looking_for_min_age"

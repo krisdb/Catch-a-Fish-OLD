@@ -8,7 +8,7 @@
         android:maxLines="2" />
 
     <EditTextPreference
-        android:key="user_name"
+        android:key="@string/pref_key_user_name"
         android:title="@string/pref_title_user_name"
         android:selectAllOnFocus="true"
         android:capitalize="words"

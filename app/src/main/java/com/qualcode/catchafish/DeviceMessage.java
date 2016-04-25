@@ -42,12 +42,14 @@ public class DeviceMessage {
 
     private DeviceMessage(String instanceId) {
         this.mInstanceId = instanceId;
-        this.mMessageBody = "Hello";
 
-        AppPreferences prefs = new AppPreferences(mContext);
-        String sex = prefs.getUserSex();
+        final AppPreferences prefs = new AppPreferences(mContext);
 
-        // TODO(developer): add other fields that must be included in the Nearby Message payload.
+        final StringBuilder message = new StringBuilder();
+        message.append("sex=");
+        message.append(prefs.getUserSex());
+
+        this.mMessageBody = message.toString();
     }
 
     protected String getMessageBody() {
