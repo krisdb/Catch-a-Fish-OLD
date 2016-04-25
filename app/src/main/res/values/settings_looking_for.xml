@@ -1,8 +1,6 @@
 <resources>
     <string name="title_activity_settings_looking_for">Looking For</string>
 
-    <string name="pref_title_user_min_age">Minimum Age</string>
-    <string name="pref_title_user_max_age">Maximum Age</string>
     <string name="pref_looking_for_race">Race</string>
 
     <string name="pref_key_looking_for_male">looking_for_sex_male</string>
@@ -10,5 +8,14 @@
 
     <string name="pref_key_looking_for_female">looking_for_sex_female</string>
     <string name="pref_title_looking_for_sex_female">Female</string>
+
+    <string name="pref_key_looking_for_min_age">looking_for_min_age</string>
+    <string name="pref_title_looking_for_min_age">Minimum Age</string>
+
+    <string name="pref_key_looking_for_max_age">looking_for_max_age</string>
+    <string name="pref_title_looking_for_max_age">Maximum Age</string>
+
+    <string name="pref_key_looking_for_race">looking_for_race</string>
+    <string name="pref_title_looking_for_race">Race</string>
 
 </resources>

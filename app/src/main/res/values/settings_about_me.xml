@@ -1,19 +1,23 @@
 <resources>
     <string name="title_activity_settings_about_me">About Me</string>
 
-    <string name="pref_title_user_message">Display message</string>
+    <string name="pref_key_user_msg">user_msg</string>
+    <string name="pref_title_user_msg">Display Message</string>
 
     <string name="pref_key_user_name">user_name</string>
     <string name="pref_title_user_name">Name</string>
 
-    <string name="pref_title_user_age">Age</string>
-
-    <string name="pref_title_race">Race</string>
+    <string name="pref_key_user_race">user_race</string>
+    <string name="pref_title_user_race">Race</string>
 
     <string name="pref_key_user_sex">user_sex</string>
     <string name="pref_title_user_sex">Sex</string>
 
-    <string name="pref_title_interests">Interests</string>
+    <string name="pref_key_user_age">user_age</string>
+    <string name="pref_title_user_age">Age</string>
+
+    <string name="pref_key_user_interests">user_interests</string>
+    <string name="pref_title_user_interests">Interests</string>
 
     <string-array name="pref_list_sex_titles">
         <item>Male</item>

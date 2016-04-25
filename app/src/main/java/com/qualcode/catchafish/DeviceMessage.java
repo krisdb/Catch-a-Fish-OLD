@@ -21,9 +21,6 @@ public class DeviceMessage {
     private final String mMessageBody;
     private static Context mContext;
 
-    /**
-     * Builds a new {@link Message} object using a unique identifier.
-     */
     public static Message newNearbyMessage(Context ctx, String instanceId) {
         mContext = ctx;
         DeviceMessage deviceMessage = new DeviceMessage(instanceId);
@@ -31,10 +28,6 @@ public class DeviceMessage {
         return new Message(gson.toJson(deviceMessage).toString().getBytes(Charset.forName("UTF-8")));
     }
 
-    /**
-     * Creates a {@code DeviceMessage} object from the string used to construct the payload to a
-     * {@code Nearby} {@code Message}.
-     */
     public static DeviceMessage fromNearbyMessage(Message message) {
         String nearbyMessageString = new String(message.getContent()).trim();
         return gson.fromJson((new String(nearbyMessageString.getBytes(Charset.forName("UTF-8")))),DeviceMessage.class);
@@ -46,8 +39,18 @@ public class DeviceMessage {
         final AppPreferences prefs = new AppPreferences(mContext);
 
         final StringBuilder message = new StringBuilder();
-        message.append("sex=");
+        message.append("msg=");
+        message.append(prefs.getUserMsg());
+        message.append("&name=");
+        message.append(prefs.getUserName());
+        message.append("&sex=");
         message.append(prefs.getUserSex());
+        message.append("&age=");
+        message.append(prefs.getUserAge());
+        message.append("&race=");
+        message.append(prefs.getUserRace());
+        message.append("&interests=");
+        message.append(prefs.getUserInterests());
 
         this.mMessageBody = message.toString();
     }

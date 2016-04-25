@@ -9,8 +9,8 @@
         android:title="@string/pref_title_looking_for_sex_female" />
 
     <EditTextPreference
-        android:key="looking_for_min_age"
-        android:title="@string/pref_title_user_min_age"
+        android:key="@string/pref_key_looking_for_min_age"
+        android:title="@string/pref_key_looking_for_min_age"
         android:selectAllOnFocus="true"
         android:inputType="number"
         android:capitalize="words"
@@ -20,8 +20,8 @@
         android:maxLines="1" />
 
     <EditTextPreference
-        android:key="looking_for_max_age"
-        android:title="@string/pref_title_user_max_age"
+        android:key="@string/pref_key_looking_for_max_age"
+        android:title="@string/pref_key_looking_for_max_age"
         android:selectAllOnFocus="true"
         android:inputType="number"
         android:capitalize="words"
@@ -31,8 +31,8 @@
         android:maxLines="1" />
 
     <MultiSelectListPreference
-        android:key="looking_for_race"
-        android:title="@string/pref_title_race"
+        android:key="@string/pref_key_looking_for_race"
+        android:title="@string/pref_title_looking_for_race"
         android:entries="@array/pref_list_interests_titles"
         android:entryValues="@array/pref_list_interests_values"
         android:dialogTitle="@string/pref_title_race"
