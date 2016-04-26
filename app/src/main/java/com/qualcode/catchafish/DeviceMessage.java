@@ -1,19 +1,12 @@
 package com.qualcode.catchafish;
 
 import android.content.Context;
-import android.os.Build;
 
 import com.google.android.gms.nearby.messages.Message;
 import com.google.gson.Gson;
 
 import java.nio.charset.Charset;
 
-/**
- * Used to prepare the payload for a
- * {@link com.google.android.gms.nearby.messages.Message Nearby Message}. Adds a unique id (an
- * InstanceID) to the Message payload, which helps Nearby distinguish between multiple devices with
- * the same model name.
- */
 public class DeviceMessage {
     private static final Gson gson = new Gson();
 

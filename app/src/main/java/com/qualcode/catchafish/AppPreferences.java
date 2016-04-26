@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.util.Set;
+
 public class AppPreferences{
 
     public static String KEY_PREFS_USER_NAME, KEY_PREFS_USER_MSG, KEY_PREFS_USER_AGE, KEY_PREFS_USER_RACE, KEY_PREFS_USER_INTERESTS;
@@ -48,8 +50,8 @@ public class AppPreferences{
         return _sharedPrefs.getString(KEY_PREFS_USER_RACE, "");
     }
 
-    public String getUserInterests() {
-        return _sharedPrefs.getString(KEY_PREFS_USER_INTERESTS, "");
+    public String[] getUserInterests() {
+        return _sharedPrefs.getStringSet(KEY_PREFS_USER_INTERESTS, null).toArray(new String[]{});
     }
 
     public Boolean getLookingForMale() { return _sharedPrefs.getBoolean(KEY_PREFS_LOOKING_FOR_SEX_MALE, false); }
@@ -60,7 +62,9 @@ public class AppPreferences{
 
     public int getLookingForMaxAge() { return _sharedPrefs.getInt(KEY_PREFS_LOOKING_FOR_MAX_AGE, 0); }
 
-    public String getLookingForRace() { return _sharedPrefs.getString(KEY_PREFS_LOOKING_FOR_RACE, ""); }
+    public String[] getLookingForRace() {
+        return _sharedPrefs.getStringSet(KEY_PREFS_LOOKING_FOR_RACE, null).toArray(new String[]{});
+    }
 
     public void saveUserSex(String text) {
         //_prefsEditor.putString(KEY_PREFS_USER_SEX, text);

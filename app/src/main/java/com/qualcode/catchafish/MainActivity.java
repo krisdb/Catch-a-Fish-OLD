@@ -110,8 +110,17 @@ public class MainActivity extends AppCompatActivity implements
         final Boolean lookingForMale = prefs.getLookingForMale();
         final Boolean lookingForFemale = prefs.getLookingForFemale();
 
+        final int lookingForMinAge = prefs.getLookingForMinAge();
+        final int lookingForMaxAge = prefs.getLookingForMaxAge();
+        final String[] lookingForRace = prefs.getLookingForRace();
+
+        final String fishName = fishInfo.get("name");
+        final String fishMsg = fishInfo.get("msg");
         final Boolean fishIsMale = fishInfo.get("sex").equals("0");
         final Boolean fishIsFemale = fishInfo.get("sex").equals("1");
+        final int fishAge = Integer.valueOf(fishInfo.get("age"));
+        final String fishRace = fishInfo.get("race");
+        final String fishInterests = fishInfo.get("interests");
 
         /*
         String status = "Looking For Male: " + lookingForMale + "\n\n";
@@ -123,7 +132,13 @@ public class MainActivity extends AppCompatActivity implements
         */
 
         if (fishIsMale && lookingForMale || fishIsFemale && lookingForFemale)
+        {
+            if (fishAge >= 18 && fishAge > lookingForMinAge && fishAge < lookingForMaxAge)
+            {
+                return true;
+            }
             return true;
+        }
 
         return false;
     }
