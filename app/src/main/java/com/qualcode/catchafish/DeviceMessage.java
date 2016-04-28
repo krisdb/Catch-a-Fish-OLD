@@ -14,19 +14,19 @@ public class DeviceMessage {
     private final String mMessageBody;
     private static Context mContext;
 
-    public static Message newNearbyMessage(Context ctx, String instanceId) {
+    public static Message newNearbyMessage(final Context ctx, final String instanceId) {
         mContext = ctx;
-        DeviceMessage deviceMessage = new DeviceMessage(instanceId);
+        final DeviceMessage deviceMessage = new DeviceMessage(instanceId);
 
         return new Message(gson.toJson(deviceMessage).toString().getBytes(Charset.forName("UTF-8")));
     }
 
-    public static DeviceMessage fromNearbyMessage(Message message) {
-        String nearbyMessageString = new String(message.getContent()).trim();
+    public static DeviceMessage fromNearbyMessage(final Message message) {
+        final String nearbyMessageString = new String(message.getContent()).trim();
         return gson.fromJson((new String(nearbyMessageString.getBytes(Charset.forName("UTF-8")))),DeviceMessage.class);
     }
 
-    private DeviceMessage(String instanceId) {
+    private DeviceMessage(final String instanceId) {
         this.mInstanceId = instanceId;
 
         final AppPreferences prefs = new AppPreferences(mContext);
@@ -42,8 +42,8 @@ public class DeviceMessage {
         message.append(prefs.getUserAge());
         message.append("&race=");
         message.append(prefs.getUserRace());
-        message.append("&interests=");
-        message.append(prefs.getUserInterests());
+        message.append("&interests=0,1,2");
+        //message.append(prefs.getUserInterests());
 
         this.mMessageBody = message.toString();
     }

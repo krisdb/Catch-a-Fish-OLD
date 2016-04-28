@@ -43,15 +43,13 @@ public class MainActivity extends AppCompatActivity implements
 {
 
     private static final String TAG = "MainActivity";
-
     private static final Strategy PUB_SUB_STRATEGY = new Strategy.Builder().setTtlSeconds(3 * 60).build();
     private GoogleApiClient mGoogleApiClient;
-
     private Message mDeviceInfoMessage;
-
     private MessageListener mMessageListener;
-
     private boolean mResolvingNearbyPermissionError = false;
+    private String mDisplayMsg;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements
                     public void run() {
                         if (MatchFound(DeviceMessage.fromNearbyMessage(message).getMessageBody()))
                         {
-                            ((TextView)findViewById(R.id.txt_status)).setText("Match Found!");
+                            ((TextView)findViewById(R.id.txt_status)).setText(mDisplayMsg);
                         }
                     }
                 });
@@ -102,26 +100,29 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    private Boolean MatchFound(final String fi)
+    private Boolean MatchFound(final String info)
     {
         final AppPreferences prefs = new AppPreferences(getApplicationContext());
-        final HashMap<String, String> fishInfo = convert(fi);
+        final HashMap<String, String> fishInfo = convert(info);
 
         final Boolean lookingForMale = prefs.getLookingForMale();
         final Boolean lookingForFemale = prefs.getLookingForFemale();
 
         final int lookingForMinAge = prefs.getLookingForMinAge();
         final int lookingForMaxAge = prefs.getLookingForMaxAge();
-        final String[] lookingForRace = prefs.getLookingForRace();
+        //final String[] lookinForInterests = prefs.getLookingForInterests();
+        //final String[] lookingForRace = prefs.getLookingForRace();
+        final String[] lookingForRace = { "0", "1", "2" };
+        final String[] lookinForInterests = { "1", "2" };
 
         final String fishName = fishInfo.get("name");
-        final String fishMsg = fishInfo.get("msg");
+        mDisplayMsg = fishInfo.get("msg");
         final Boolean fishIsMale = fishInfo.get("sex").equals("0");
         final Boolean fishIsFemale = fishInfo.get("sex").equals("1");
         final int fishAge = Integer.valueOf(fishInfo.get("age"));
-        final String fishRace = fishInfo.get("race");
-        final String fishInterests = fishInfo.get("interests");
-
+        final int fishRace = Integer.valueOf(fishInfo.get("race"));
+        //final String fishInterests = fishInfo.get("interests");
+        final String[] fishInterests = { "0", "2", "4" };
         /*
         String status = "Looking For Male: " + lookingForMale + "\n\n";
         status += "Looking For Female: " + lookingForFemale + "\n\n";
@@ -131,16 +132,43 @@ public class MainActivity extends AppCompatActivity implements
         ((TextView)findViewById(R.id.txt_status)).setText(status);
         */
 
-        if (fishIsMale && lookingForMale || fishIsFemale && lookingForFemale)
-        {
-            if (fishAge >= 18 && fishAge > lookingForMinAge && fishAge < lookingForMaxAge)
-            {
-                return true;
+        if (fishIsMale && lookingForMale == false || fishIsFemale && lookingForFemale == false)
+            return false;
+
+        if (fishAge >= 18 && fishAge < 100 && fishAge < lookingForMinAge || fishAge > lookingForMaxAge)
+            return false;
+
+        Boolean raceFound = false;
+
+        if (lookingForRace != null && lookingForRace.length > 0) {
+            for (final String lr : lookingForRace) {
+                if (Integer.valueOf(lr).equals(fishRace)) {
+                    raceFound = true;
+                    break;
+                }
             }
-            return true;
         }
 
-        return false;
+        if (raceFound == false)
+            return false;
+
+        Boolean interestFound = false;
+
+        for(final String li : lookinForInterests) {
+            for (final String fi : fishInterests)
+            {
+                if (Integer.valueOf(li).equals(Integer.valueOf(fi)))
+                {
+                    interestFound = true;
+                    break;
+                }
+            }
+        }
+
+        if (interestFound == false)
+            return false;
+
+        return true;
     }
 
 

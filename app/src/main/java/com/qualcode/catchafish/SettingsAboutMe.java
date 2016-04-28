@@ -10,6 +10,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.MultiSelectListPreference;
@@ -21,8 +22,11 @@ import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
+import android.widget.Toast;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class SettingsAboutMe extends PreferenceActivity {
@@ -64,24 +68,23 @@ public class SettingsAboutMe extends PreferenceActivity {
 
         private void setSummaries() {
 
-            EditTextPreference etUserMsg = ((EditTextPreference)findPreference(getString(R.string.pref_key_user_msg)));
-            etUserMsg.setSummary(etUserMsg.getText());
+            final EditTextPreference etUserMsg = ((EditTextPreference)findPreference(getString(R.string.pref_key_user_msg)));
+            etUserMsg.setSummary(etUserMsg.getText() == null || etUserMsg.getText().length() == 0 ? getString(R.string.default_display_msg) : etUserMsg.getText());
 
-            EditTextPreference etUserName = ((EditTextPreference)findPreference(getString(R.string.pref_key_user_name)));
+            final EditTextPreference etUserName = ((EditTextPreference)findPreference(getString(R.string.pref_key_user_name)));
             etUserName.setSummary(etUserName.getText());
 
-            ListPreference lpUserSex = ((ListPreference)findPreference(getString(R.string.pref_key_user_sex)));
+            final ListPreference lpUserSex = ((ListPreference)findPreference(getString(R.string.pref_key_user_sex)));
             lpUserSex.setSummary(lpUserSex.getEntry());
 
-            EditTextPreference etUserAge = ((EditTextPreference)findPreference(getString(R.string.pref_key_user_age)));
+            final EditTextPreference etUserAge = ((EditTextPreference)findPreference(getString(R.string.pref_key_user_age)));
             etUserAge.setSummary(etUserAge.getText());
 
-            ListPreference lpUserRace = ((ListPreference)findPreference(getString(R.string.pref_key_user_race)));
+            final ListPreference lpUserRace = ((ListPreference)findPreference(getString(R.string.pref_key_user_race)));
             lpUserRace.setSummary(lpUserRace.getEntry());
 
-            MultiSelectListPreference mlpUserInterests = ((MultiSelectListPreference)findPreference(getString(R.string.pref_key_user_interests)));
+            final MultiSelectListPreference mlpUserInterests = ((MultiSelectListPreference)findPreference(getString(R.string.pref_key_user_interests)));
             mlpUserInterests.setSummary(mlpUserInterests.getEntries().toString());
-
         }
     }
 

@@ -4,4 +4,10 @@
     <string name="action_settings">Settings</string>
 
     <string name="service_id">com.qualcode.catchafish</string>
+
+    <string name="default_display_msg">A short message that will display if a match is found.</string>
+
+    <string-array name="empty_array"/>
+
+    <string name="google_app_id">AIzaSyANV4rYe_vx5_4yV6X_RivXTZNDtvRXYFs</string>
 </resources>

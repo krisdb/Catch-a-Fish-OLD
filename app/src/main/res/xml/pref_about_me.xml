@@ -1,19 +1,14 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <EditTextPreference
-        android:key="@string/pref_key_user_msg"
-        android:title="@string/pref_title_user_msg"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:maxLines="2" />
-
-    <EditTextPreference
         android:key="@string/pref_key_user_name"
         android:title="@string/pref_title_user_name"
         android:selectAllOnFocus="true"
         android:capitalize="words"
         android:singleLine="true"
-        android:maxLines="1" />
+        android:maxLines="1"
+        android:maxLength="144"
+        />
 
     <ListPreference
         android:key="@string/pref_key_user_sex"
@@ -33,7 +28,8 @@
         android:singleLine="true"
         android:defaultValue="18"
         android:maxLength="2"
-        android:maxLines="1" />
+        android:maxLines="1"
+        />
 
     <ListPreference
         android:key="@string/pref_key_user_race"
@@ -48,8 +44,19 @@
         android:key="@string/pref_key_user_interests"
         android:title="@string/pref_title_user_interests"
         android:entries="@array/pref_list_interests_titles"
+        android:defaultValue="@array/empty_array"
         android:entryValues="@array/pref_list_interests_values"
-        android:dialogTitle="@string/pref_key_user_interests"
+        android:dialogTitle="@string/pref_title_user_interests"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null" />
+
+    <EditTextPreference
+        android:key="@string/pref_key_user_msg"
+        android:title="@string/pref_title_user_msg"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:maxLines="2"
+        android:maxLength="144"
+        />
+
 </PreferenceScreen>

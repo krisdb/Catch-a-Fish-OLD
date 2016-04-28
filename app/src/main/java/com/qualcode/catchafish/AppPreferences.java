@@ -4,13 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class AppPreferences{
 
-    public static String KEY_PREFS_USER_NAME, KEY_PREFS_USER_MSG, KEY_PREFS_USER_AGE, KEY_PREFS_USER_RACE, KEY_PREFS_USER_INTERESTS;
-    public static String KEY_PREFS_USER_SEX, KEY_PREFS_LOOKING_FOR_SEX_MALE, KEY_PREFS_LOOKING_FOR_SEX_FEMALE;
-    public static String KEY_PREFS_LOOKING_FOR_MIN_AGE, KEY_PREFS_LOOKING_FOR_MAX_AGE, KEY_PREFS_LOOKING_FOR_RACE;
+    private static String KEY_PREFS_USER_NAME, KEY_PREFS_USER_MSG, KEY_PREFS_USER_AGE, KEY_PREFS_USER_RACE, KEY_PREFS_USER_INTERESTS;
+    private static String KEY_PREFS_USER_SEX, KEY_PREFS_LOOKING_FOR_SEX_MALE, KEY_PREFS_LOOKING_FOR_SEX_FEMALE;
+    private static String KEY_PREFS_LOOKING_FOR_MIN_AGE, KEY_PREFS_LOOKING_FOR_MAX_AGE, KEY_PREFS_LOOKING_FOR_RACE;
     private SharedPreferences _sharedPrefs;
     //private SharedPreferences.Editor _prefsEditor;
 
@@ -34,37 +35,26 @@ public class AppPreferences{
 
     public String getUserMsg() { return _sharedPrefs.getString(KEY_PREFS_USER_MSG, ""); }
 
-    public String getUserName() {
-        return _sharedPrefs.getString(KEY_PREFS_USER_NAME, "");
-    }
+    public String getUserName() { return _sharedPrefs.getString(KEY_PREFS_USER_NAME, ""); }
 
-    public String getUserSex() {
-        return _sharedPrefs.getString(KEY_PREFS_USER_SEX, "");
-    }
+    public int getUserSex() { return Integer.valueOf(_sharedPrefs.getString(KEY_PREFS_USER_SEX, "-1")); }
 
-    public String getUserAge() {
-        return _sharedPrefs.getString(KEY_PREFS_USER_AGE, "");
-    }
+    public int getUserAge() { return Integer.valueOf(_sharedPrefs.getString(KEY_PREFS_USER_AGE, "18")); }
 
-    public String getUserRace() {
-        return _sharedPrefs.getString(KEY_PREFS_USER_RACE, "");
-    }
+    public int getUserRace() { return Integer.valueOf(_sharedPrefs.getString(KEY_PREFS_USER_RACE, "-1")); }
 
-    public String[] getUserInterests() {
-        return _sharedPrefs.getStringSet(KEY_PREFS_USER_INTERESTS, null).toArray(new String[]{});
-    }
+    public String[] getLookingForInterests() {return _sharedPrefs.getStringSet(KEY_PREFS_USER_INTERESTS, new HashSet<String>()).toArray(new String[]{}); }
 
     public Boolean getLookingForMale() { return _sharedPrefs.getBoolean(KEY_PREFS_LOOKING_FOR_SEX_MALE, false); }
 
     public Boolean getLookingForFemale() { return _sharedPrefs.getBoolean(KEY_PREFS_LOOKING_FOR_SEX_FEMALE, false); }
 
-    public int getLookingForMinAge() { return _sharedPrefs.getInt(KEY_PREFS_LOOKING_FOR_MIN_AGE, 0); }
+    public int getLookingForMinAge() { return Integer.valueOf(_sharedPrefs.getString(KEY_PREFS_LOOKING_FOR_MIN_AGE, "18")); }
 
-    public int getLookingForMaxAge() { return _sharedPrefs.getInt(KEY_PREFS_LOOKING_FOR_MAX_AGE, 0); }
 
-    public String[] getLookingForRace() {
-        return _sharedPrefs.getStringSet(KEY_PREFS_LOOKING_FOR_RACE, null).toArray(new String[]{});
-    }
+    public int getLookingForMaxAge() { return Integer.valueOf(_sharedPrefs.getString(KEY_PREFS_LOOKING_FOR_MAX_AGE, "99")); }
+
+        public String[] getLookingForRace() { return _sharedPrefs.getStringSet(KEY_PREFS_LOOKING_FOR_RACE, new HashSet<String>()).toArray(new String[]{}); }
 
     public void saveUserSex(String text) {
         //_prefsEditor.putString(KEY_PREFS_USER_SEX, text);
