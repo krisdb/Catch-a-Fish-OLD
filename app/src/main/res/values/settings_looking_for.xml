@@ -31,4 +31,5 @@
     <string name="pref_title_settings_vibrate">Disable Vibrate</string>
     <string name="pref_summary_settings_vibrate">Disable vibration when a match is found</string>
 
+    <string name="pref_key_copyright">setting_copyright</string>
 </resources>

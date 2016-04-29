@@ -90,16 +90,18 @@ public class MainActivity extends AppCompatActivity implements
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    findViewById(R.id.avloadingIndicatorView).setVisibility(View.VISIBLE);
                     ((TextView)findViewById(R.id.txt_status)).setText("");
                     publish();
                     subscribe();
                 } else {
 
-                    if (mRingtone.isPlaying())
+                    if (mRingtone != null && mRingtone.isPlaying())
                         mRingtone.stop();
 
                     unpublish();
                     unsubscribe();
+                    findViewById(R.id.avloadingIndicatorView).setVisibility(View.GONE);
                 }
             }
         });
@@ -118,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         ((TextView) findViewById(R.id.txt_status)).setText(mDisplayMsg);
+        findViewById(R.id.avloadingIndicatorView).setVisibility(View.GONE);
     }
 
 

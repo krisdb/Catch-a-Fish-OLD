@@ -1,48 +1,61 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
     android:orientation="vertical"
+    android:layout_margin="10dp"
     >
+        <ToggleButton
+            android:id="@+id/btn_available"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOn="@string/button_text_available_on"
+            android:textOff="@string/button_text_available_off"
+            android:layout_centerInParent="true"
+            android:layout_alignParentTop="true"
+            />
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/txt_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentTop="true"
-        >
-            <ToggleButton
-                android:id="@+id/btn_available"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textOn="Not Available"
-                android:textOff="Available" />
+        android:layout_below="@id/btn_available"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="20dp"
+        android:textSize="18sp"
+        />
 
-            <TextView
-                android:id="@+id/txt_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/btn_available" />
-    </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true"
-        >
-            <Button
-                android:id="@+id/btn_about_me"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="About Me" />
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/avloadingIndicatorView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:visibility="gone"
+        app:indicator="BallScale"
+        app:indicator_color="#000"
+        android:layout_below="@id/txt_status"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="30dp"
+    />
 
-            <Button
-                android:id="@+id/btn_looking_for"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Looking For" />
-    </RelativeLayout>
+    <Button
+            android:id="@+id/btn_about_me"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_text_about_me"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="30dp"
+            />
 
-</LinearLayout>
+        <Button
+            android:id="@+id/btn_looking_for"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_text_looking_for"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="20dp"
+            />
+</RelativeLayout>

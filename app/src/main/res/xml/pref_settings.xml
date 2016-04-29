@@ -19,5 +19,9 @@
         android:summary="@string/pref_summary_settings_strobe_light"
         />
     -->
-
+    <Preference
+        android:key="@string/pref_key_copyright"
+        android:selectable="false"
+        android:enabled="true"
+        android:summary="Catch a Fish, \u00a9 2016, version 0.5a" />
 </PreferenceScreen>
