@@ -28,10 +28,13 @@
     </string-array>
 
     <string-array name="pref_list_race_titles">
-        <item>White</item>
-        <item>Asian</item>
-        <item>Hispanic</item>
         <item>African American</item>
+        <item>Asian</item>
+        <item>European</item>
+        <item>Hispanic</item>
+        <item>Jewish</item>
+        <item>Native American</item>
+        <item>White</item>
     </string-array>
 
     <string-array name="pref_list_race_values">
@@ -39,13 +42,26 @@
         <item>1</item>
         <item>2</item>
         <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
     </string-array>
 
     <string-array name="pref_list_interests_titles">
-        <item>Music</item>
+        <item>Current Events</item>
+        <item>Comedy</item>
+        <item>Health/Fitness</item>
+        <item>History</item>
+        <item>Fashion</item>
         <item>Food</item>
-        <item>Traveling</item>
+        <item>Movies</item>
+        <item>Music</item>
+        <item>Politics</item>
         <item>Reading</item>
+        <item>Science</item>
+        <item>Technology</item>
+        <item>Traveling</item>
+        <item>TV</item>
     </string-array>
 
     <string-array name="pref_list_interests_values">
@@ -53,6 +69,16 @@
         <item>1</item>
         <item>2</item>
         <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
     </string-array>
 
 </resources>
