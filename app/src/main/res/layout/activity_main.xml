@@ -1,38 +1,48 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical"
+    >
 
-    <ToggleButton
-        android:id="@+id/btn_available"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textOn="Not Available"
-        android:textOff="Available"
-        />
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        >
+            <ToggleButton
+                android:id="@+id/btn_available"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOn="Not Available"
+                android:textOff="Available" />
 
-    <TextView
-        android:id="@+id/txt_status"
+            <TextView
+                android:id="@+id/txt_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/btn_available" />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btn_available"
-        />
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        >
+            <Button
+                android:id="@+id/btn_about_me"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="About Me" />
 
-    <Button
-        android:id="@+id/btn_about_me"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="About Me"
-        android:layout_below="@id/txt_status"
-        />
+            <Button
+                android:id="@+id/btn_looking_for"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Looking For" />
+    </RelativeLayout>
 
-    <Button
-        android:id="@+id/btn_looking_for"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Looking For"
-        android:layout_below="@id/btn_about_me"
-        />
-</RelativeLayout>
+</LinearLayout>

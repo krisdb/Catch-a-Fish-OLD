@@ -33,9 +33,7 @@ public class DeviceMessage {
 
         final StringBuilder message = new StringBuilder();
         message.append("msg=");
-        message.append(prefs.getUserMsg());
-        message.append("&name=");
-        message.append(prefs.getUserName());
+        message.append(prefs.getDisplayMsg());
         message.append("&sex=");
         message.append(prefs.getUserSex());
         message.append("&age=");

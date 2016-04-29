@@ -1,21 +1,25 @@
 package com.qualcode.catchafish;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.SharedPreferences;
+import android.hardware.Camera;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -30,10 +34,6 @@ import com.google.android.gms.nearby.messages.PublishOptions;
 import com.google.android.gms.nearby.messages.Strategy;
 import com.google.android.gms.nearby.messages.SubscribeCallback;
 import com.google.android.gms.nearby.messages.SubscribeOptions;
-
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements
@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements
     private MessageListener mMessageListener;
     private boolean mResolvingNearbyPermissionError = false;
     private String mDisplayMsg;
+    private Ringtone mRingtone;
 
 
     @Override
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements
                     public void run() {
                         if (MatchFound(DeviceMessage.fromNearbyMessage(message).getMessageBody()))
                         {
-                            ((TextView)findViewById(R.id.txt_status)).setText(mDisplayMsg);
+                            Alert();
                         }
                     }
                 });
@@ -84,15 +85,19 @@ public class MainActivity extends AppCompatActivity implements
         findViewById(R.id.btn_about_me).setOnClickListener(this);
         findViewById(R.id.btn_looking_for).setOnClickListener(this);
 
-
         final ToggleButton toggle = (ToggleButton) findViewById(R.id.btn_available);
 
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    ((TextView)findViewById(R.id.txt_status)).setText("");
                     publish();
                     subscribe();
                 } else {
+
+                    if (mRingtone.isPlaying())
+                        mRingtone.stop();
+
                     unpublish();
                     unsubscribe();
                 }
@@ -100,10 +105,35 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
+    private void Alert()
+    {
+        final AppPreferences prefs = new AppPreferences(this);
+
+        mRingtone = RingtoneManager.getRingtone(this, Uri.parse(prefs.getRingtone()));
+        mRingtone.play();
+
+        if (prefs.getDisableVibrate() == false)
+        {
+            ((Vibrator)getSystemService(Context.VIBRATOR_SERVICE)).vibrate(1000);
+        }
+
+        ((TextView) findViewById(R.id.txt_status)).setText(mDisplayMsg);
+    }
+
+
     private Boolean MatchFound(final String info)
     {
-        final AppPreferences prefs = new AppPreferences(getApplicationContext());
-        final HashMap<String, String> fishInfo = convert(info);
+        final AppPreferences prefs = new AppPreferences(this);
+        final HashMap<String, String> fishInfo = Utilities.convert(info);
+
+        final StringBuilder sbMessage = new StringBuilder();
+
+        sbMessage.append(getString(R.string.match_msg_intro));
+
+        if (fishInfo.get("msg") != null && fishInfo.get("msg").length() > 0) {
+            sbMessage.append("\n\n");
+            sbMessage.append(fishInfo.get("msg"));
+        }
 
         final Boolean lookingForMale = prefs.getLookingForMale();
         final Boolean lookingForFemale = prefs.getLookingForFemale();
@@ -112,17 +142,16 @@ public class MainActivity extends AppCompatActivity implements
         final int lookingForMaxAge = prefs.getLookingForMaxAge();
         //final String[] lookinForInterests = prefs.getLookingForInterests();
         //final String[] lookingForRace = prefs.getLookingForRace();
-        final String[] lookingForRace = { "0", "1", "2" };
-        final String[] lookinForInterests = { "1", "2" };
+        final String[] lookingForRace = { "2" };
+        final String[] lookingForInterests = { "1", "2", "3" };
 
         final String fishName = fishInfo.get("name");
-        mDisplayMsg = fishInfo.get("msg");
         final Boolean fishIsMale = fishInfo.get("sex").equals("0");
         final Boolean fishIsFemale = fishInfo.get("sex").equals("1");
         final int fishAge = Integer.valueOf(fishInfo.get("age"));
         final int fishRace = Integer.valueOf(fishInfo.get("race"));
         //final String fishInterests = fishInfo.get("interests");
-        final String[] fishInterests = { "0", "2", "4" };
+        final String[] fishInterests = { "0", "2", "3" };
         /*
         String status = "Looking For Male: " + lookingForMale + "\n\n";
         status += "Looking For Female: " + lookingForFemale + "\n\n";
@@ -154,13 +183,18 @@ public class MainActivity extends AppCompatActivity implements
 
         Boolean interestFound = false;
 
-        for(final String li : lookinForInterests) {
-            for (final String fi : fishInterests)
-            {
-                if (Integer.valueOf(li).equals(Integer.valueOf(fi)))
-                {
-                    interestFound = true;
-                    break;
+        if (lookingForInterests != null && lookingForInterests.length > 0) {
+            sbMessage.append("\n\n");
+            sbMessage.append(getString(R.string.match_msg_interests_header));
+            sbMessage.append(" ");
+            for (final String li : lookingForInterests) {
+                for (final String fi : fishInterests) {
+                    if (Integer.valueOf(li).equals(Integer.valueOf(fi))) {
+                        interestFound = true;
+                        sbMessage.append(Utilities.GetInterest(this, Integer.valueOf(fi)));
+                        sbMessage.append(",");
+                        sbMessage.append(" ");
+                    }
                 }
             }
         }
@@ -168,9 +202,10 @@ public class MainActivity extends AppCompatActivity implements
         if (interestFound == false)
             return false;
 
+        mDisplayMsg = sbMessage.toString().replaceAll(", $", "");
+
         return true;
     }
-
 
     private void publish() {
 
@@ -329,26 +364,11 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
+            startActivity(new Intent(MainActivity.this, Settings.class));
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private HashMap<String, String> convert(String str) {
-        String[] tokens = str.split("&");
-        HashMap<String, String> map = new HashMap<String, String>();
-
-        final int length = tokens.length;
-
-        for (int i = 0;i < length; i++)
-        {
-            String[] strings = tokens[i].split("=");
-
-            if(strings.length == 2)
-                map.put(strings[0], strings[1].replaceAll("%2C", ","));
-        }
-
-        return map;
-    }
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Catch A Fish</string>
+    <string name="app_name">Catch a Fish</string>
 
     <string name="action_settings">Settings</string>
 
@@ -8,6 +8,9 @@
     <string name="default_display_msg">A short message that will display if a match is found.</string>
 
     <string-array name="empty_array"/>
+
+    <string name="match_msg_interests_header">Interested In:</string>
+    <string name="match_msg_intro">You caught a fish!</string>
 
     <string name="google_app_id">AIzaSyANV4rYe_vx5_4yV6X_RivXTZNDtvRXYFs</string>
 </resources>

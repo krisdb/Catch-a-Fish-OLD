@@ -1,11 +1,9 @@
 <resources>
     <string name="title_activity_settings_about_me">About Me</string>
+    <string name="title_activity_settings_settings">Settings</string>
 
-    <string name="pref_key_user_msg">user_msg</string>
-    <string name="pref_title_user_msg">Display Message</string>
-
-    <string name="pref_key_user_name">user_name</string>
-    <string name="pref_title_user_name">Name</string>
+    <string name="pref_key_display_msg">display_msg</string>
+    <string name="pref_title_display_msg">Display Message</string>
 
     <string name="pref_key_user_race">user_race</string>
     <string name="pref_title_user_race">Race</string>
@@ -46,7 +44,7 @@
     <string-array name="pref_list_interests_titles">
         <item>Music</item>
         <item>Food</item>
-        <item>Travel</item>
+        <item>Traveling</item>
         <item>Reading</item>
     </string-array>
 

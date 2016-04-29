@@ -7,9 +7,10 @@ import android.preference.ListPreference;
 import android.preference.MultiSelectListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.preference.SwitchPreference;
 
 
-public class SettingsAboutMe extends PreferenceActivity {
+public class Settings extends PreferenceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,15 +25,13 @@ public class SettingsAboutMe extends PreferenceActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
-            addPreferencesFromResource(R.xml.pref_about_me);
-            setSummaries();
+            addPreferencesFromResource(R.xml.pref_settings);
         }
 
         @Override
         public void onResume() {
             super.onResume();
             getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-
         }
 
         @Override
@@ -43,26 +42,8 @@ public class SettingsAboutMe extends PreferenceActivity {
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            setSummaries();
         }
 
-        private void setSummaries() {
-
-            final EditTextPreference etDisplayMsg = ((EditTextPreference)findPreference(getString(R.string.pref_key_display_msg)));
-            etDisplayMsg.setSummary(etDisplayMsg.getText() == null || etDisplayMsg.getText().length() == 0 ? getString(R.string.default_display_msg) : etDisplayMsg.getText());
-
-            final ListPreference lpUserSex = ((ListPreference)findPreference(getString(R.string.pref_key_user_sex)));
-            lpUserSex.setSummary(lpUserSex.getEntry());
-
-            final EditTextPreference etUserAge = ((EditTextPreference)findPreference(getString(R.string.pref_key_user_age)));
-            etUserAge.setSummary(etUserAge.getText());
-
-            final ListPreference lpUserRace = ((ListPreference)findPreference(getString(R.string.pref_key_user_race)));
-            lpUserRace.setSummary(lpUserRace.getEntry());
-
-            final MultiSelectListPreference mlpUserInterests = ((MultiSelectListPreference)findPreference(getString(R.string.pref_key_user_interests)));
-            mlpUserInterests.setSummary(mlpUserInterests.getEntries().toString());
-        }
     }
 
 }

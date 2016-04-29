@@ -18,4 +18,17 @@
     <string name="pref_key_looking_for_race">looking_for_race</string>
     <string name="pref_title_looking_for_race">Race</string>
 
+    <string name="pref_key_settings_ringtone">setting_ringtone</string>
+    <string name="pref_title_settings_ringtone">Ringtone</string>
+    <string name="pref_summary_settings_ringtone">Select the alert sound when a match is found</string>
+
+
+    <string name="pref_key_settings_strobe_light">setting_flashlight</string>
+    <string name="pref_title_settings_strobe_light">Strobe Light</string>
+    <string name="pref_summary_settings_strobe_light">Turn your camera flash on &amp; off when a match is found</string>
+
+    <string name="pref_key_settings_vibrate">setting_vibrate</string>
+    <string name="pref_title_settings_vibrate">Disable Vibrate</string>
+    <string name="pref_summary_settings_vibrate">Disable vibration when a match is found</string>
+
 </resources>
