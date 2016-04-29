@@ -40,10 +40,15 @@ public class DeviceMessage {
         message.append(prefs.getUserAge());
         message.append("&race=");
         message.append(prefs.getUserRace());
-        message.append("&interests=0,1,2");
-        //message.append(prefs.getUserInterests());
+        message.append("&interests=");
 
-        this.mMessageBody = message.toString();
+        for(final String i : prefs.getUserInterests())
+        {
+            message.append(i);
+            message.append(",");
+        }
+
+        this.mMessageBody = message.toString().replaceAll(", $", "");
     }
 
     protected String getMessageBody() {

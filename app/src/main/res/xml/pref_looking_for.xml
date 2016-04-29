@@ -36,7 +36,7 @@
         android:entries="@array/pref_list_race_titles"
         android:entryValues="@array/pref_list_race_values"
         android:dialogTitle="@string/pref_title_looking_for_race"
+        android:positiveButtonText="@string/dialog_action_ok"
         android:negativeButtonText="@null"
-        android:positiveButtonText="@null" />
-
+        />
 </PreferenceScreen>

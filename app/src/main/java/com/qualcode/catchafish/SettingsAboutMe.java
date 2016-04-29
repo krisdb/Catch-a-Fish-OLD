@@ -7,6 +7,7 @@ import android.preference.ListPreference;
 import android.preference.MultiSelectListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 
 
 public class SettingsAboutMe extends PreferenceActivity {
@@ -58,10 +59,9 @@ public class SettingsAboutMe extends PreferenceActivity {
             etUserAge.setSummary(etUserAge.getText());
 
             final ListPreference lpUserRace = ((ListPreference)findPreference(getString(R.string.pref_key_user_race)));
-            lpUserRace.setSummary(lpUserRace.getEntry());
 
-            final MultiSelectListPreference mlpUserInterests = ((MultiSelectListPreference)findPreference(getString(R.string.pref_key_user_interests)));
-            mlpUserInterests.setSummary(mlpUserInterests.getEntries().toString());
+            //final MultiSelectListPreference mlpUserInterests = ((MultiSelectListPreference)findPreference(getString(R.string.pref_key_user_interests)));
+            //mlpUserInterests.setSummary(mlpUserInterests.getEntries().toString());
         }
     }
 

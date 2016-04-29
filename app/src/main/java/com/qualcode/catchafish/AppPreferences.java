@@ -51,7 +51,7 @@ public class AppPreferences{
 
     public int getUserRace() { return Integer.valueOf(_sharedPrefs.getString(KEY_PREFS_USER_RACE, "-1")); }
 
-    public String[] getLookingForInterests() {return _sharedPrefs.getStringSet(KEY_PREFS_USER_INTERESTS, new HashSet<String>()).toArray(new String[]{}); }
+    public String[] getUserInterests() {return _sharedPrefs.getStringSet(KEY_PREFS_USER_INTERESTS, new HashSet<String>()).toArray(new String[]{}); }
 
     public Boolean getLookingForMale() { return _sharedPrefs.getBoolean(KEY_PREFS_LOOKING_FOR_SEX_MALE, false); }
 

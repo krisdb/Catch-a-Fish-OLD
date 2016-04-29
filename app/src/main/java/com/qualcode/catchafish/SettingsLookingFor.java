@@ -54,9 +54,6 @@ public class SettingsLookingFor extends PreferenceActivity  {
 
             EditTextPreference etLookingForMaxAge = ((EditTextPreference)findPreference(getString(R.string.pref_key_looking_for_max_age)));
             etLookingForMaxAge.setSummary(etLookingForMaxAge.getText());
-
-            MultiSelectListPreference mlpLookingForRace = ((MultiSelectListPreference)findPreference(getString(R.string.pref_key_looking_for_race)));
-            mlpLookingForRace.setSummary(mlpLookingForRace.getEntries().toString());
         }
     }
 }

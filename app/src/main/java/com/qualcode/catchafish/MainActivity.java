@@ -91,13 +91,13 @@ public class MainActivity extends AppCompatActivity implements
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     findViewById(R.id.avloadingIndicatorView).setVisibility(View.VISIBLE);
-                    ((TextView)findViewById(R.id.txt_status)).setText("");
+                    ((TextView) findViewById(R.id.txt_status)).setText("");
                     publish();
                     subscribe();
                 } else {
 
-                    if (mRingtone != null && mRingtone.isPlaying())
-                        mRingtone.stop();
+                    if (mRingtone != null)
+                       mRingtone.stop();
 
                     unpublish();
                     unsubscribe();
@@ -143,18 +143,15 @@ public class MainActivity extends AppCompatActivity implements
 
         final int lookingForMinAge = prefs.getLookingForMinAge();
         final int lookingForMaxAge = prefs.getLookingForMaxAge();
-        //final String[] lookinForInterests = prefs.getLookingForInterests();
-        //final String[] lookingForRace = prefs.getLookingForRace();
-        final String[] lookingForRace = { "2" };
-        final String[] lookingForInterests = { "1", "2", "3" };
+        final String[] lookingForInterests = prefs.getUserInterests();
+        final String[] lookingForRace = prefs.getLookingForRace();
 
-        final String fishName = fishInfo.get("name");
         final Boolean fishIsMale = fishInfo.get("sex").equals("0");
         final Boolean fishIsFemale = fishInfo.get("sex").equals("1");
         final int fishAge = Integer.valueOf(fishInfo.get("age"));
         final int fishRace = Integer.valueOf(fishInfo.get("race"));
-        //final String fishInterests = fishInfo.get("interests");
-        final String[] fishInterests = { "0", "2", "3" };
+        final String[] fishInterests = fishInfo.get("interests").split(",");
+
         /*
         String status = "Looking For Male: " + lookingForMale + "\n\n";
         status += "Looking For Female: " + lookingForFemale + "\n\n";
