@@ -50,12 +50,15 @@ public class MainActivity extends AppCompatActivity implements
     private boolean mResolvingNearbyPermissionError = false;
     private String mDisplayMsg;
     private Ringtone mRingtone;
+    private AppPreferences mPrefs;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mPrefs = new AppPreferences(this);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Nearby.MESSAGES_API)
@@ -81,6 +84,10 @@ public class MainActivity extends AppCompatActivity implements
             public void onLost(final Message message) {
             }
         };
+
+        ((TextView) findViewById(R.id.txt_status)).setText(getString(R.string.help_first_time));
+
+        //mPrefs.setRunCount(mPrefs.getRunCount());
 
         findViewById(R.id.btn_about_me).setOnClickListener(this);
         findViewById(R.id.btn_looking_for).setOnClickListener(this);
@@ -109,12 +116,11 @@ public class MainActivity extends AppCompatActivity implements
 
     private void Alert()
     {
-        final AppPreferences prefs = new AppPreferences(this);
 
-        mRingtone = RingtoneManager.getRingtone(this, Uri.parse(prefs.getRingtone()));
+        mRingtone = RingtoneManager.getRingtone(this, Uri.parse(mPrefs.getRingtone()));
         mRingtone.play();
 
-        if (prefs.getDisableVibrate() == false)
+        if (mPrefs.getDisableVibrate() == false)
         {
             ((Vibrator)getSystemService(Context.VIBRATOR_SERVICE)).vibrate(1000);
         }
@@ -126,7 +132,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private Boolean MatchFound(final String info)
     {
-        final AppPreferences prefs = new AppPreferences(this);
         final HashMap<String, String> fishInfo = Utilities.convert(info);
 
         final StringBuilder sbMessage = new StringBuilder();
@@ -138,13 +143,13 @@ public class MainActivity extends AppCompatActivity implements
             sbMessage.append(fishInfo.get("msg"));
         }
 
-        final Boolean lookingForMale = prefs.getLookingForMale();
-        final Boolean lookingForFemale = prefs.getLookingForFemale();
+        final Boolean lookingForMale = mPrefs.getLookingForMale();
+        final Boolean lookingForFemale = mPrefs.getLookingForFemale();
 
-        final int lookingForMinAge = prefs.getLookingForMinAge();
-        final int lookingForMaxAge = prefs.getLookingForMaxAge();
-        final String[] lookingForInterests = prefs.getUserInterests();
-        final String[] lookingForRace = prefs.getLookingForRace();
+        final int lookingForMinAge = mPrefs.getLookingForMinAge();
+        final int lookingForMaxAge = mPrefs.getLookingForMaxAge();
+        final String[] lookingForInterests = mPrefs.getUserInterests();
+        final String[] lookingForRace = mPrefs.getLookingForRace();
 
         final Boolean fishIsMale = fishInfo.get("sex").equals("0");
         final Boolean fishIsFemale = fishInfo.get("sex").equals("1");

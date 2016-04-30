@@ -17,6 +17,8 @@
     <string name="pref_key_user_interests">user_interests</string>
     <string name="pref_title_user_interests">Interests</string>
 
+    <string name="pref_key_run_count">run_count</string>
+
     <string-array name="pref_list_sex_titles">
         <item>Male</item>
         <item>Female</item>

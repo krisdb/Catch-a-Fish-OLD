@@ -14,6 +14,7 @@
     <string name="button_text_about_me">About Me</string>
     <string name="button_text_looking_for">Looking For</string>
 
+    <string name="help_first_time">Note: app must be active and running to find a match.</string>
     <string-array name="empty_array"/>
 
     <string name="match_msg_interests_header">Similar Interests:</string>

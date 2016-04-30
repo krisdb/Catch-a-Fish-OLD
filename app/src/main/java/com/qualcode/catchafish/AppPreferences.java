@@ -14,7 +14,8 @@ public class AppPreferences{
     private static String KEY_PREFS_LOOKING_FOR_MIN_AGE, KEY_PREFS_LOOKING_FOR_MAX_AGE, KEY_PREFS_LOOKING_FOR_RACE;
     private static String KEY_PREFS_SETTINGS_RINGTONE, KEY_PREFS_SETTINGS_VIBRATE, KEY_PREFS_SETTINGS_STROBE_LIGHT;
     private SharedPreferences _sharedPrefs;
-    //private SharedPreferences.Editor _prefsEditor;
+    private static String KEY_RUN_COUNT;
+    private SharedPreferences.Editor _prefsEditor;
 
     public AppPreferences(Context context) {
         KEY_PREFS_DISPLAY_MSG = context.getString(R.string.pref_key_display_msg);
@@ -22,6 +23,7 @@ public class AppPreferences{
         KEY_PREFS_USER_AGE = context.getString(R.string.pref_key_user_age);
         KEY_PREFS_USER_RACE = context.getString(R.string.pref_key_user_race);
         KEY_PREFS_USER_INTERESTS = context.getString(R.string.pref_key_user_interests);
+        KEY_RUN_COUNT = context.getString(R.string.pref_key_run_count);
 
         KEY_PREFS_LOOKING_FOR_SEX_MALE = context.getString(R.string.pref_key_looking_for_male);
         KEY_PREFS_LOOKING_FOR_SEX_FEMALE = context.getString(R.string.pref_key_looking_for_female);
@@ -34,8 +36,10 @@ public class AppPreferences{
         KEY_PREFS_SETTINGS_STROBE_LIGHT = context.getString(R.string.pref_key_settings_strobe_light);
 
         this._sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        //this._prefsEditor = _sharedPrefs.edit();
+        this._prefsEditor = _sharedPrefs.edit();
     }
+
+    public int getRunCount() { return _sharedPrefs.getInt(KEY_RUN_COUNT, 0); }
 
     public String getRingtone() { return _sharedPrefs.getString(KEY_PREFS_SETTINGS_RINGTONE, "default ringtone"); }
 
@@ -64,9 +68,9 @@ public class AppPreferences{
 
         public String[] getLookingForRace() { return _sharedPrefs.getStringSet(KEY_PREFS_LOOKING_FOR_RACE, new HashSet<String>()).toArray(new String[]{}); }
 
-    public void saveUserSex(String text) {
-        //_prefsEditor.putString(KEY_PREFS_USER_SEX, text);
-        //_prefsEditor.commit();
+    public void setRunCount(int count) {
+        _prefsEditor.putInt(KEY_RUN_COUNT, count+1);
+        _prefsEditor.commit();
     }
 
 }
