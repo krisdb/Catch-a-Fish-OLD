@@ -1,5 +1,6 @@
 package com.qualcode.catchafish;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -7,6 +8,7 @@ import android.graphics.Color;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
+import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements
     private AppPreferences mPrefs;
     private final ArrayList<String> mNearbyDevices = new ArrayList<>();
     private StringBuilder mNearbyMsg;
+    RadarView mRadarView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +78,10 @@ public class MainActivity extends AppCompatActivity implements
                 .build();
 
         SetMessage();
+
+        mRadarView = (RadarView) findViewById(R.id.radarView);
+        mRadarView.setShowCircles(true);
+        mRadarView.setFrameRate(150);
 
         //mPrefs.setRunCount(mPrefs.getRunCount());
         ((TextView) findViewById(R.id.txt_status)).setText(getString(R.string.help_first_time));
@@ -161,8 +168,11 @@ public class MainActivity extends AppCompatActivity implements
 
     private void Alert()
     {
-        mRingtone = RingtoneManager.getRingtone(this, Uri.parse(mPrefs.getRingtone()));
-        mRingtone.play();
+        MediaPlayer mPlayer = MediaPlayer.create(this, R.raw.fish_splash);
+        mPlayer.start();
+
+        //mRingtone = RingtoneManager.getRingtone(this, Uri.parse(mPrefs.getRingtone()));
+        //mRingtone.play();
 
         if (mPrefs.getDisableVibrate() == false)
         {
@@ -170,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         ((TextView)findViewById(R.id.txt_status)).setText(mDisplayMsg);
-        findViewById(R.id.avloadingIndicatorView).setVisibility(View.GONE);
+        findViewById(R.id.radarView).setVisibility(View.INVISIBLE);
     }
 
 
@@ -200,7 +210,9 @@ public class MainActivity extends AppCompatActivity implements
         Log.i(TAG, "Fish is Female: " + fishIsFemale);
         Log.i(TAG, "Fish is Race: " + fishRace);
 
-        if (lookingForRace != null && lookingForRace.length > 0) {
+        sbMessage.append("\n\n");
+
+        if (fishRace != 99 && lookingForRace != null && lookingForRace.length > 0) {
             Boolean raceFound = false;
             for (final String lr : lookingForRace) {
                 Log.i(TAG, "Looking for Race: " + lr);
@@ -213,8 +225,7 @@ public class MainActivity extends AppCompatActivity implements
             if (raceFound == false)
                 return false;
 
-            sbMessage.append("\n\n");
-            sbMessage.append(Utilities.GetRace(this, Integer.valueOf(fishRace)));
+            sbMessage.append(Utilities.GetRace(this, fishRace));
             sbMessage.append(" ");
         }
 
@@ -222,15 +233,15 @@ public class MainActivity extends AppCompatActivity implements
             return false;
         else {
             if (fishIsMale)
-                sbMessage.append("Male, ");
+                sbMessage.append("Male");
             else if (fishIsFemale)
-                sbMessage.append("Female, ");
+                sbMessage.append("Female");
         }
 
         if (fishAge >= 18 && fishAge < 100 && fishAge < lookingForMinAge || fishAge > lookingForMaxAge)
             return false;
         else if (hideAge == false) {
-            sbMessage.append("Age ");
+            sbMessage.append(", Age ");
             sbMessage.append(fishAge);
         }
 
@@ -238,20 +249,20 @@ public class MainActivity extends AppCompatActivity implements
             Log.i(TAG, "Interests");
             sbMessage.append("\n\n");
             sbMessage.append(getString(R.string.match_msg_interests_similar_header));
-            sbMessage.append(" ");
+            sbMessage.append("\n");
 
             for (final String li : lookingForInterests) {
                 for (final String fi : fishInterests) {
                     if (Integer.valueOf(li).equals(Integer.valueOf(fi))) {
                         sbMessage.append(Utilities.GetInterest(this, Integer.valueOf(fi)));
-                        sbMessage.append(", ");
+                        sbMessage.append("\n");
                     }
                 }
             }
         }
 
         if (fishInfo.get("msg") != null && fishInfo.get("msg").length() > 0) {
-            sbMessage.append("\n\n");
+            sbMessage.append("\n");
             sbMessage.append("\"");
             sbMessage.append(fishInfo.get("msg"));
             sbMessage.append("\"");
@@ -445,7 +456,8 @@ public class MainActivity extends AppCompatActivity implements
         ((TextView) findViewById(R.id.txt_nearby_devices)).setText("");
         findViewById(R.id.txt_nearby_devices_header).setVisibility(View.INVISIBLE);
         (((ToggleButton)findViewById(R.id.btn_available))).setChecked(true);
-        findViewById(R.id.avloadingIndicatorView).setVisibility(View.VISIBLE);
+        if (mRadarView != null) mRadarView.startAnimation();
+        findViewById(R.id.radarView).setVisibility(View.VISIBLE);
         ((TextView)findViewById(R.id.txt_status)).setText("");
         publish();
         subscribe();
@@ -458,10 +470,10 @@ public class MainActivity extends AppCompatActivity implements
         ((TextView) findViewById(R.id.txt_nearby_devices)).setText("");
         findViewById(R.id.txt_nearby_devices_header).setVisibility(View.INVISIBLE);
         (((ToggleButton)findViewById(R.id.btn_available))).setChecked(false);
-        findViewById(R.id.avloadingIndicatorView).setVisibility(View.INVISIBLE);
+        findViewById(R.id.radarView).setVisibility(View.INVISIBLE);
+        if (mRadarView != null) mRadarView.stopAnimation();
         unpublish();
         unsubscribe();
-
         if (mRingtone != null)
             mRingtone.stop();
     }

@@ -12,7 +12,7 @@
             android:value="@string/service_id" />
         <meta-data
             android:name="com.google.android.nearby.messages.API_KEY"
-            android:value="AIzaSyANV4rYe_vx5_4yV6X_RivXTZNDtvRXYFs" />
+            android:value="AIzaSyChrC1lrnpW_toTnvOUiF0kSCpm50pbjC0" />
 
         <activity
             android:name=".MainActivity"

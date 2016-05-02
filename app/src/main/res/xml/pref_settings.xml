@@ -1,10 +1,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
+<!--
     <RingtonePreference
         android:key="@string/pref_key_settings_ringtone"
         android:title="@string/pref_title_settings_ringtone"
         android:summary="@string/pref_summary_settings_ringtone"
         />
+-->
 
     <SwitchPreference
         android:key="@string/pref_key_settings_vibrate"
