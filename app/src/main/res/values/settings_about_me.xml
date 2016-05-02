@@ -37,7 +37,6 @@
         <item>Jewish</item>
         <item>Native American</item>
         <item>White</item>
-        <item>Not Specified</item>
     </string-array>
 
     <string-array name="pref_list_race_values">
@@ -48,7 +47,6 @@
         <item>4</item>
         <item>5</item>
         <item>6</item>
-        <item>99</item>
     </string-array>
 
     <string-array name="pref_list_interests_titles">

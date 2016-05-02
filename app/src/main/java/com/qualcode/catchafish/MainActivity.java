@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void run() {
                         Log.i(TAG, "Match Found");
+                        mNearbyDevices.clear();
                         final String msg = DeviceMessage.fromNearbyMessage(message).getMessageBody();
                         final HashMap<String, String> info = Utilities.convert(msg);
                         mNearbyDevices.add(info.get("phoneid"));
@@ -212,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements
 
         sbMessage.append("\n\n");
 
-        if (fishRace != 99 && lookingForRace != null && lookingForRace.length > 0) {
+        if (lookingForRace != null && lookingForRace.length > 0) {
             Boolean raceFound = false;
             for (final String lr : lookingForRace) {
                 Log.i(TAG, "Looking for Race: " + lr);
@@ -233,15 +234,15 @@ public class MainActivity extends AppCompatActivity implements
             return false;
         else {
             if (fishIsMale)
-                sbMessage.append("Male");
+                sbMessage.append("Male ");
             else if (fishIsFemale)
-                sbMessage.append("Female");
+                sbMessage.append("Female ");
         }
 
         if (fishAge >= 18 && fishAge < 100 && fishAge < lookingForMinAge || fishAge > lookingForMaxAge)
             return false;
         else if (hideAge == false) {
-            sbMessage.append(", Age ");
+            sbMessage.append(" Age ");
             sbMessage.append(fishAge);
         }
 
