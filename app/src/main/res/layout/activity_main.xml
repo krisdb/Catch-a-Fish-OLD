@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_margin="20dp"
     >
-        <ToggleButton
+    <ToggleButton
             android:id="@+id/btn_available"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -22,22 +22,39 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/btn_available"
         android:layout_centerInParent="true"
-        android:layout_marginTop="20dp"
         android:textSize="18sp"
+        android:layout_marginTop="20dp"
         />
-
 
     <com.wang.avi.AVLoadingIndicatorView
         android:id="@+id/avloadingIndicatorView"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:indicator="BallScale"
         app:indicator_color="#000"
         android:layout_below="@id/txt_status"
         android:layout_centerInParent="true"
-        android:layout_marginTop="30dp"
     />
+
+    <TextView
+        android:id="@+id/txt_nearby_devices_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/avloadingIndicatorView"
+        android:layout_centerInParent="true"
+        android:textSize="18sp"
+        android:text="@string/text_fish_nearby"
+        android:visibility="invisible"
+        />
+    <TextView
+        android:id="@+id/txt_nearby_devices"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txt_nearby_devices_header"
+        android:layout_centerInParent="true"
+        android:textSize="16sp"
+        />
 
     <Button
             android:id="@+id/btn_about_me"

@@ -11,6 +11,11 @@ public class Utilities {
         return ctx.getResources().getStringArray(R.array.pref_list_interests_titles)[id];
     }
 
+    public static String GetRace(Context ctx, final int id)
+    {
+        return ctx.getResources().getStringArray(R.array.pref_list_race_titles)[id];
+    }
+
 
     public static HashMap<String, String> convert(String str) {
         String[] tokens = str.split("&");

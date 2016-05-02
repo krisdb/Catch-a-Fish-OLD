@@ -12,6 +12,12 @@
         android:summary="@string/pref_summary_settings_vibrate"
         />
 
+    <SwitchPreference
+        android:key="@string/pref_key_settings_hide_age"
+        android:title="@string/pref_title_settings_hide_age"
+        android:summary="@string/pref_summary_settings_hide_age"
+        />
+
     <!--
     <SwitchPreference
         android:key="@string/pref_key_settings_strobe_light"

@@ -3,6 +3,7 @@ package com.qualcode.catchafish;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.graphics.Color;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
@@ -16,7 +17,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -34,6 +38,9 @@ import com.google.android.gms.nearby.messages.PublishOptions;
 import com.google.android.gms.nearby.messages.Strategy;
 import com.google.android.gms.nearby.messages.SubscribeCallback;
 import com.google.android.gms.nearby.messages.SubscribeOptions;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements
@@ -51,7 +58,8 @@ public class MainActivity extends AppCompatActivity implements
     private String mDisplayMsg;
     private Ringtone mRingtone;
     private AppPreferences mPrefs;
-
+    private final ArrayList<String> mNearbyDevices = new ArrayList<>();
+    private StringBuilder mNearbyMsg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,15 +74,59 @@ public class MainActivity extends AppCompatActivity implements
                 .addOnConnectionFailedListener(this)
                 .build();
 
+        SetMessage();
+
+        //mPrefs.setRunCount(mPrefs.getRunCount());
+        ((TextView) findViewById(R.id.txt_status)).setText(getString(R.string.help_first_time));
+        findViewById(R.id.btn_about_me).setOnClickListener(this);
+        findViewById(R.id.btn_looking_for).setOnClickListener(this);
+
+        final ToggleButton toggle = (ToggleButton)findViewById(R.id.btn_available);
+
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    initSearch();
+                } else {
+                    stopSearch();
+                }
+            }
+        });
+    }
+
+    private void SetMessage()
+    {
+        mNearbyMsg = new StringBuilder();
         mMessageListener = new MessageListener() {
+
             @Override
             public void onFound(final Message message) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (MatchFound(DeviceMessage.fromNearbyMessage(message).getMessageBody()))
+                        Log.i(TAG, "Match Found");
+                        final String msg = DeviceMessage.fromNearbyMessage(message).getMessageBody();
+                        final HashMap<String, String> info = Utilities.convert(msg);
+                        mNearbyDevices.add(info.get("phoneid"));
+                        findViewById(R.id.txt_nearby_devices_header).setVisibility(View.VISIBLE);
+
+                        if (mPrefs.getDisableVibrate() == false)
                         {
+                            ((Vibrator)getSystemService(Context.VIBRATOR_SERVICE)).vibrate(100);
+                        }
+
+                        for(String device : mNearbyDevices)
+                        {
+                            mNearbyMsg.append(device);
+                            mNearbyMsg.append(", ");
+                        }
+
+                        if (MatchFound(info)) {
                             Alert();
+                            stopSearch();
+                        }
+                        else {
+                            ((TextView)findViewById(R.id.txt_nearby_devices)).setText(mNearbyMsg.toString().replaceAll(", $", ""));
                         }
                     }
                 });
@@ -82,41 +134,33 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void onLost(final Message message) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mNearbyMsg.setLength(0);
+                        final String msg = DeviceMessage.fromNearbyMessage(message).getMessageBody();
+                        final HashMap<String, String> info = Utilities.convert(msg);
+                        mNearbyDevices.remove(info.get("phoneid"));
+
+                        if (mNearbyDevices.size() > 0) {
+                            for (String device : mNearbyDevices) {
+                                mNearbyMsg.append(device);
+                                mNearbyMsg.append("\n");
+                            }
+                            ((TextView) findViewById(R.id.txt_nearby_devices)).setText(mNearbyMsg.toString().replaceAll(", $", ""));
+                        }
+                        else {
+                            ((TextView) findViewById(R.id.txt_nearby_devices)).setText("");
+                            findViewById(R.id.txt_nearby_devices_header).setVisibility(View.INVISIBLE);
+                        }
+                    }
+                });
             }
         };
-
-        ((TextView) findViewById(R.id.txt_status)).setText(getString(R.string.help_first_time));
-
-        //mPrefs.setRunCount(mPrefs.getRunCount());
-
-        findViewById(R.id.btn_about_me).setOnClickListener(this);
-        findViewById(R.id.btn_looking_for).setOnClickListener(this);
-
-        final ToggleButton toggle = (ToggleButton) findViewById(R.id.btn_available);
-
-        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    findViewById(R.id.avloadingIndicatorView).setVisibility(View.VISIBLE);
-                    ((TextView) findViewById(R.id.txt_status)).setText("");
-                    publish();
-                    subscribe();
-                } else {
-
-                    if (mRingtone != null)
-                       mRingtone.stop();
-
-                    unpublish();
-                    unsubscribe();
-                    findViewById(R.id.avloadingIndicatorView).setVisibility(View.GONE);
-                }
-            }
-        });
     }
 
     private void Alert()
     {
-
         mRingtone = RingtoneManager.getRingtone(this, Uri.parse(mPrefs.getRingtone()));
         mRingtone.play();
 
@@ -125,23 +169,15 @@ public class MainActivity extends AppCompatActivity implements
             ((Vibrator)getSystemService(Context.VIBRATOR_SERVICE)).vibrate(1000);
         }
 
-        ((TextView) findViewById(R.id.txt_status)).setText(mDisplayMsg);
+        ((TextView)findViewById(R.id.txt_status)).setText(mDisplayMsg);
         findViewById(R.id.avloadingIndicatorView).setVisibility(View.GONE);
     }
 
 
-    private Boolean MatchFound(final String info)
-    {
-        final HashMap<String, String> fishInfo = Utilities.convert(info);
-
+    private Boolean MatchFound(final  HashMap<String, String> fishInfo) {
         final StringBuilder sbMessage = new StringBuilder();
 
         sbMessage.append(getString(R.string.match_msg_intro));
-
-        if (fishInfo.get("msg") != null && fishInfo.get("msg").length() > 0) {
-            sbMessage.append("\n\n");
-            sbMessage.append(fishInfo.get("msg"));
-        }
 
         final Boolean lookingForMale = mPrefs.getLookingForMale();
         final Boolean lookingForFemale = mPrefs.getLookingForFemale();
@@ -154,60 +190,76 @@ public class MainActivity extends AppCompatActivity implements
         final Boolean fishIsMale = fishInfo.get("sex").equals("0");
         final Boolean fishIsFemale = fishInfo.get("sex").equals("1");
         final int fishAge = Integer.valueOf(fishInfo.get("age"));
+        final Boolean hideAge = fishInfo.get("hideage").equals("true");
         final int fishRace = Integer.valueOf(fishInfo.get("race"));
-        final String[] fishInterests = fishInfo.get("interests").split(",");
+        final String[] fishInterests = (fishInfo.get("interests") != null) ? fishInfo.get("interests").split(",") : new String[]{};
 
-        /*
-        String status = "Looking For Male: " + lookingForMale + "\n\n";
-        status += "Looking For Female: " + lookingForFemale + "\n\n";
-        status += "Fish is Male: " + fishIsMale + "\n\n";
-        status += "Fish is Female: " + fishIsFemale + "\n\n";
-
-        ((TextView)findViewById(R.id.txt_status)).setText(status);
-        */
-
-        if (fishIsMale && lookingForMale == false || fishIsFemale && lookingForFemale == false)
-            return false;
-
-        if (fishAge >= 18 && fishAge < 100 && fishAge < lookingForMinAge || fishAge > lookingForMaxAge)
-            return false;
-
-        Boolean raceFound = false;
+        Log.i(TAG, "Looking For Male: " + lookingForMale);
+        Log.i(TAG, "Looking For Female: " + lookingForFemale);
+        Log.i(TAG, "Fish is Male: " + fishIsMale);
+        Log.i(TAG, "Fish is Female: " + fishIsFemale);
+        Log.i(TAG, "Fish is Race: " + fishRace);
 
         if (lookingForRace != null && lookingForRace.length > 0) {
+            Boolean raceFound = false;
             for (final String lr : lookingForRace) {
+                Log.i(TAG, "Looking for Race: " + lr);
                 if (Integer.valueOf(lr).equals(fishRace)) {
                     raceFound = true;
                     break;
                 }
             }
+
+            if (raceFound == false)
+                return false;
+
+            sbMessage.append("\n\n");
+            sbMessage.append(Utilities.GetRace(this, Integer.valueOf(fishRace)));
+            sbMessage.append(" ");
         }
 
-        if (raceFound == false)
+        if ((lookingForMale || lookingForFemale) && (fishIsMale && lookingForMale == false || fishIsFemale && lookingForFemale == false))
             return false;
+        else {
+            if (fishIsMale)
+                sbMessage.append("Male, ");
+            else if (fishIsFemale)
+                sbMessage.append("Female, ");
+        }
 
-        Boolean interestFound = false;
+        if (fishAge >= 18 && fishAge < 100 && fishAge < lookingForMinAge || fishAge > lookingForMaxAge)
+            return false;
+        else if (hideAge == false) {
+            sbMessage.append("Age ");
+            sbMessage.append(fishAge);
+        }
 
         if (lookingForInterests != null && lookingForInterests.length > 0) {
+            Log.i(TAG, "Interests");
             sbMessage.append("\n\n");
-            sbMessage.append(getString(R.string.match_msg_interests_header));
+            sbMessage.append(getString(R.string.match_msg_interests_similar_header));
             sbMessage.append(" ");
+
             for (final String li : lookingForInterests) {
                 for (final String fi : fishInterests) {
                     if (Integer.valueOf(li).equals(Integer.valueOf(fi))) {
-                        interestFound = true;
                         sbMessage.append(Utilities.GetInterest(this, Integer.valueOf(fi)));
-                        sbMessage.append(",");
-                        sbMessage.append(" ");
+                        sbMessage.append(", ");
                     }
                 }
             }
         }
 
-        if (interestFound == false)
-            return false;
+        if (fishInfo.get("msg") != null && fishInfo.get("msg").length() > 0) {
+            sbMessage.append("\n\n");
+            sbMessage.append("\"");
+            sbMessage.append(fishInfo.get("msg"));
+            sbMessage.append("\"");
+        }
 
-        mDisplayMsg = sbMessage.toString().replaceAll(", $", "");
+        mDisplayMsg = sbMessage.toString();
+
+        (((ToggleButton) findViewById(R.id.btn_available))).setChecked(false);
 
         return true;
     }
@@ -235,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements
                         @Override
                         public void onResult(Status status) {
                             if (status.isSuccess()) {
-                                //display publishing message
+                                Log.i(TAG, "publish successfully");
                             } else {
                                 handleUnsuccessfulNearbyResult(status);
                             }
@@ -251,6 +303,7 @@ public class MainActivity extends AppCompatActivity implements
                 mGoogleApiClient.connect();
             }
         } else {
+            mNearbyDevices.clear();
             SubscribeOptions options = new SubscribeOptions.Builder()
                     .setStrategy(PUB_SUB_STRATEGY)
                     .setCallback(new SubscribeCallback() {
@@ -309,6 +362,18 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            SetMessage();
+            initSearch();
+        }
+        else
+        {
+            stopSearch();
+        }
+    }
+
     private void handleUnsuccessfulNearbyResult(Status status) {
         Log.i(TAG, "processing error, status = " + status);
         if (status.getStatusCode() == NearbyMessagesStatusCodes.APP_NOT_OPTED_IN) {
@@ -323,14 +388,11 @@ public class MainActivity extends AppCompatActivity implements
             }
         } else {
             if (status.getStatusCode() == ConnectionResult.NETWORK_ERROR) {
-                Toast.makeText(this,
-                        "No connectivity, cannot proceed. Fix in 'Settings' and try again.",
-                        Toast.LENGTH_LONG).show();
-                //resetToDefaultState();
+                Toast.makeText(this, "No connectivity, cannot proceed. Fix in 'Settings' and try again.", Toast.LENGTH_LONG).show();
+                stopSearch();
             } else {
                 // To keep things simple, pop a toast for all other error messages.
-                Toast.makeText(this, "Unsuccessful: " +
-                        status.getStatusMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Unsuccessful: " + status.getStatusMessage(), Toast.LENGTH_LONG).show();
             }
 
         }
@@ -376,4 +438,31 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    public void initSearch()
+    {
+        mNearbyDevices.clear();
+        mNearbyMsg.setLength(0);
+        ((TextView) findViewById(R.id.txt_nearby_devices)).setText("");
+        findViewById(R.id.txt_nearby_devices_header).setVisibility(View.INVISIBLE);
+        (((ToggleButton)findViewById(R.id.btn_available))).setChecked(true);
+        findViewById(R.id.avloadingIndicatorView).setVisibility(View.VISIBLE);
+        ((TextView)findViewById(R.id.txt_status)).setText("");
+        publish();
+        subscribe();
+    }
+
+    private void stopSearch()
+    {
+        mNearbyDevices.clear();
+        mNearbyMsg.setLength(0);
+        ((TextView) findViewById(R.id.txt_nearby_devices)).setText("");
+        findViewById(R.id.txt_nearby_devices_header).setVisibility(View.INVISIBLE);
+        (((ToggleButton)findViewById(R.id.btn_available))).setChecked(false);
+        findViewById(R.id.avloadingIndicatorView).setVisibility(View.INVISIBLE);
+        unpublish();
+        unsubscribe();
+
+        if (mRingtone != null)
+            mRingtone.stop();
+    }
 }

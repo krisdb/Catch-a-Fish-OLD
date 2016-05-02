@@ -1,6 +1,7 @@
 package com.qualcode.catchafish;
 
 import android.content.Context;
+import android.os.Build;
 
 import com.google.android.gms.nearby.messages.Message;
 import com.google.gson.Gson;
@@ -38,6 +39,10 @@ public class DeviceMessage {
         message.append(prefs.getUserSex());
         message.append("&age=");
         message.append(prefs.getUserAge());
+        message.append("&phoneid=");
+        message.append(Build.MODEL);
+        message.append("&hideage=");
+        message.append(prefs.getHideAge());
         message.append("&race=");
         message.append(prefs.getUserRace());
         message.append("&interests=");

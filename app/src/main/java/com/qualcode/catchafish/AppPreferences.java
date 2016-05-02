@@ -12,7 +12,7 @@ public class AppPreferences{
     private static String KEY_PREFS_DISPLAY_MSG, KEY_PREFS_USER_AGE, KEY_PREFS_USER_RACE, KEY_PREFS_USER_INTERESTS;
     private static String KEY_PREFS_USER_SEX, KEY_PREFS_LOOKING_FOR_SEX_MALE, KEY_PREFS_LOOKING_FOR_SEX_FEMALE;
     private static String KEY_PREFS_LOOKING_FOR_MIN_AGE, KEY_PREFS_LOOKING_FOR_MAX_AGE, KEY_PREFS_LOOKING_FOR_RACE;
-    private static String KEY_PREFS_SETTINGS_RINGTONE, KEY_PREFS_SETTINGS_VIBRATE, KEY_PREFS_SETTINGS_STROBE_LIGHT;
+    private static String KEY_PREFS_SETTINGS_RINGTONE, KEY_PREFS_SETTINGS_VIBRATE, KEY_PREFS_SETTINGS_STROBE_LIGHT, KEY_PREFS_SETTINGS_HIDE_AGE;
     private SharedPreferences _sharedPrefs;
     private static String KEY_RUN_COUNT;
     private SharedPreferences.Editor _prefsEditor;
@@ -34,6 +34,7 @@ public class AppPreferences{
         KEY_PREFS_SETTINGS_RINGTONE = context.getString(R.string.pref_key_settings_ringtone);
         KEY_PREFS_SETTINGS_VIBRATE = context.getString(R.string.pref_key_settings_vibrate);
         KEY_PREFS_SETTINGS_STROBE_LIGHT = context.getString(R.string.pref_key_settings_strobe_light);
+        KEY_PREFS_SETTINGS_HIDE_AGE = context.getString(R.string.pref_key_settings_hide_age);
 
         this._sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         this._prefsEditor = _sharedPrefs.edit();
@@ -42,6 +43,8 @@ public class AppPreferences{
     public int getRunCount() { return _sharedPrefs.getInt(KEY_RUN_COUNT, 0); }
 
     public String getRingtone() { return _sharedPrefs.getString(KEY_PREFS_SETTINGS_RINGTONE, "default ringtone"); }
+
+    public Boolean getHideAge() { return _sharedPrefs.getBoolean(KEY_PREFS_SETTINGS_HIDE_AGE, false); }
 
     public Boolean getDisableVibrate() { return _sharedPrefs.getBoolean(KEY_PREFS_SETTINGS_VIBRATE, false); }
 
